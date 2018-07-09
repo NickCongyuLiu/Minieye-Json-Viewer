@@ -46,7 +46,6 @@
         jsonViewer(socket_data);
     }else{
         jsonViewer(evt.data);
-        websocket.send(SIGNALTHR);
     }
     websocket.send("123"); 
   }
@@ -69,7 +68,6 @@
         var element = document.getElementById("jsonFile");
         element.appendChild(but);
         but.addEventListener("click",function(){
-            SIGNALTHR='STOP AUTO';
             $('#jsonFile').children("button").attr("disabled",false);
             $(this).attr("disabled",true);
             websocket.send(SIGNALTWO+but.innerHTML);

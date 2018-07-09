@@ -54,8 +54,7 @@ class ChatHandler(WebSocketHandler):
                         pass
                     else:
                         self.file_list.append(filePath)
-        
-            file_list_mess = ''.join(str(e[-12:-5])+" " for e in self.file_list)
+            file_list_mess = ''.join(str(e.rsplit('/',1)[1][:-5])+" " for e in self.file_list)
             file_list_mess = file_list_mess+'file'
             self.write_message(file_list_mess)
 
