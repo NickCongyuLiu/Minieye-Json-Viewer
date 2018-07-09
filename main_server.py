@@ -38,8 +38,7 @@ class ChatHandler(WebSocketHandler):
     #websocket接受信息
     def on_message(self, message):
 
-
-        ##展示文件
+        ##展示文件列表
         if(message[0:12]=='ask for fold'):
             file_list_mess =[]
             # print(message[13:])
@@ -56,7 +55,6 @@ class ChatHandler(WebSocketHandler):
                     else:
                         self.file_list.append(filePath)
         
-            # print(self.file_list)
             file_list_mess = ''.join(str(e[-12:-5])+" " for e in self.file_list)
             file_list_mess = file_list_mess+'file'
             self.write_message(file_list_mess)
@@ -66,16 +64,7 @@ class ChatHandler(WebSocketHandler):
             jsonFile = self.rootdir +'/'+ message[13:]+'.json'
             f=open(jsonFile)
             test = json.load(f)
-            print(test)
-            # single=[]
-            # for data in test["data"]:
-            #     single.append(data[0])
-            #     single.append(data[1])
-            # f.close()
-            #转换格式方便websocket发送，减轻负担
-            # mess = ''.join(str(e)+" " for e in single)
-            #把文件名放在最后
-            # mess = mess+message[13:]+' '+'singleDisplay'
+            # print(test)
             self.write_message(test)
         
     #关闭websocket    

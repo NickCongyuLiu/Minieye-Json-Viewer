@@ -17,7 +17,7 @@
    * @return boolean
    */
   function isUrl(string) {
-     var regexp = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/;
+     var regexp = /^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?/
      return regexp.test(string);
   }
 
@@ -25,10 +25,9 @@
    * Transform a json object into html representation
    * @return string
    */
-  function json2html(json, options) {
-    var html = '';
+  function json2html(json) {
+    html = '';
     if (typeof json === 'string') {
-      /* Escape tags */
       json = json.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
       if (isUrl(json))
         html += '<a href="' + json + '" class="json-string">' + json + '</a>';
@@ -48,16 +47,15 @@
       if (json.length > 0) {
         html += '[<ol class="json-array">';
         for (var i = 0; i < json.length; ++i) {
-          html += '<li>';
-          /* Add toggle button if item is collapsable */
-          if (isCollapsable(json[i])) {
+          html += '<li>'
+          // Add toggle button if item is collapsable
+          if (isCollapsable(json[i]))
             html += '<a href class="json-toggle"></a>';
-          }
-          html += json2html(json[i], options);
-          /* Add comma if item is not last */
-          if (i < json.length - 1) {
+
+          html += json2html(json[i]);
+          // Add comma if item is not last
+          if (i < json.length - 1)
             html += ',';
-          }
           html += '</li>';
         }
         html += '</ol>]';
@@ -70,20 +68,17 @@
       var key_count = Object.keys(json).length;
       if (key_count > 0) {
         html += '{<ul class="json-dict">';
-        for (var key in json) {
-          if (json.hasOwnProperty(key)) {
+        for (var i in json) {
+          if (json.hasOwnProperty(i)) {
             html += '<li>';
-            var keyRepr = options.withQuotes ?
-              '<span class="json-string">"' + key + '"</span>' : key;
-            /* Add toggle button if item is collapsable */
-            if (isCollapsable(json[key])) {
-              html += '<a href class="json-toggle">' + keyRepr + '</a>';
-            }
-            else {
-              html += keyRepr;
-            }
-            html += ': ' + json2html(json[key], options);
-            /* Add comma if item is not last */
+            // Add toggle button if item is collapsable
+            if (isCollapsable(json[i]))
+              html += '<a href class="json-toggle">' + i + '</a>';
+            else
+              html += i;
+
+            html += ': ' + json2html(json[i]);
+            // Add comma if item is not last
             if (--key_count > 0)
               html += ',';
             html += '</li>';
@@ -100,24 +95,20 @@
 
   /**
    * jQuery plugin method
-   * @param json: a javascript object
-   * @param options: an optional options hash
    */
   $.fn.jsonViewer = function(json, options) {
-    options = options || {};
-
-    /* jQuery chaining */
+    // jQuery chaining
     return this.each(function() {
 
-      /* Transform to HTML */
-      var html = json2html(json, options);
+      // Transform to HTML
+      var html = json2html(json)
       if (isCollapsable(json))
         html = '<a href class="json-toggle"></a>' + html;
 
-      /* Insert HTML in target DOM element */
+      // Insert HTML in target DOM element
       $(this).html(html);
 
-      /* Bind click on toggle buttons */
+      // Bind click on toggle buttons
       $(this).off('click');
       $(this).on('click', 'a.json-toggle', function() {
         var target = $(this).toggleClass('collapsed').siblings('ul.json-dict, ol.json-array');
@@ -133,14 +124,14 @@
         return false;
       });
 
-      /* Simulate click on toggle button when placeholder is clicked */
+      // Simulate click on toggle button when placeholder is clicked
       $(this).on('click', 'a.json-placeholder', function() {
         $(this).siblings('a.json-toggle').click();
         return false;
       });
 
-      if (options.collapsed == true) {
-        /* Trigger click to collapse all nodes */
+      if (typeof options == "object" && options.collapsed == true) {
+        // Trigger click to collapse all nodes
         $(this).find('a.json-toggle').click();
       }
     });
